@@ -59,9 +59,21 @@ public abstract class QueryBuilder {
     public String buildSelectAndArgs(UserQuery query, List<Object> argList) {
         String where = StringUtils.join(toWhere(query, argList), " and ");
         if (!where.isEmpty()) {
-            where = "where " + where;
+            where = " where " + where;
         }
-        return "select * from " + tableName + " " + where;
+        String page = "";
+        if (query.needPaging()) {
+            page = " LIMIT " + query.getPageNumber() + " OFFSET " + query.getPageNumber()* query.getPageSize();
+        }
+        return "select * from " + tableName + where + page;
+    }
+
+    public String buildCountAndArgs(UserQuery query, List<Object> argList) {
+        String where = StringUtils.join(toWhere(query, argList), " ");
+        if (!where.isEmpty()) {
+            where = " where " + where;
+        }
+        return "select count(*) from " + tableName + where;
     }
 
 }

@@ -38,4 +38,9 @@ public class PageQuery implements Serializable {
         }
         return pageSize;
     }
+
+    public boolean needPaging() {
+        return pageNumber != null || pageSize != null;
+    }
+
 }
