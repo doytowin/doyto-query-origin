@@ -1,5 +1,7 @@
 package win.doyto.query.origin.module.user;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,6 +20,12 @@ public class UserService {
 
     public List<User> query(UserQuery userQuery) {
         return userRepository.findAll(new UserSpecification(userQuery));
+    }
+
+    public Page<User> page(UserQuery userQuery) {
+        UserSpecification userSpecification = new UserSpecification(userQuery);
+        PageRequest pageRequest = userQuery.toPageRequest();
+        return userRepository.findAll(userSpecification, pageRequest);
     }
 
 }

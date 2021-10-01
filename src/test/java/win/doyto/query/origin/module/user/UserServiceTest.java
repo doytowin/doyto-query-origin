@@ -1,6 +1,7 @@
 package win.doyto.query.origin.module.user;
 
 import org.junit.jupiter.api.Test;
+import org.springframework.data.domain.Page;
 import win.doyto.query.origin.DemoApplicationTests;
 
 import java.util.List;
@@ -44,5 +45,13 @@ class UserServiceTest extends DemoApplicationTests {
         UserQuery query = UserQuery.builder().accountLike("test").valid(true).build();
         List<User> users = userService.query(query);
         assertEquals(1, users.size());
+    }
+
+    @Test
+    void page() {
+        UserQuery query = UserQuery.builder().pageNumber(1).pageSize(2).build();
+        Page<User> userPage = userService.page(query);
+        assertEquals(3, userPage.getTotalElements());
+        assertEquals(1, userPage.getContent().size());
     }
 }
