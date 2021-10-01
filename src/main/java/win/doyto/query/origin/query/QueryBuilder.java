@@ -3,7 +3,6 @@ package win.doyto.query.origin.query;
 import lombok.SneakyThrows;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
-import win.doyto.query.origin.module.user.UserQuery;
 
 import java.lang.reflect.Field;
 import java.util.LinkedList;
@@ -15,7 +14,7 @@ import javax.persistence.Table;
  *
  * @author f0rb on 2021-10-01
  */
-public abstract class QueryBuilder {
+public class QueryBuilder {
 
     protected QueryBuilder(Class<?> clazz) {
         this.tableName = clazz.getDeclaredAnnotation(Table.class).name();
@@ -24,16 +23,24 @@ public abstract class QueryBuilder {
     private String tableName;
 
     @SneakyThrows
-    public List<String> toWhere(UserQuery query, List<Object> argList) {
+    public List<String> toWhere(PageQuery query, List<Object> argList) {
         List<String> whereList = new LinkedList<>();
-        for (Field field : FieldUtils.getAllFields(query.getClass())) {
-            Object value = FieldUtils.readField(field, query, true);
+        for (Field field : getAllFields(query)) {
+            Object value = readValue(query, field);
             if (isValidValue(value)) {
                 appendAnd(whereList, field);
                 appendArg(argList, value);
             }
         }
         return whereList;
+    }
+
+    private Field[] getAllFields(PageQuery query) {
+        return FieldUtils.getAllFields(query.getClass());
+    }
+
+    private Object readValue(PageQuery query, Field field) throws IllegalAccessException {
+        return FieldUtils.readField(field, query, true);
     }
 
     private void appendArg(List<Object> argList, Object value) {
@@ -56,7 +63,7 @@ public abstract class QueryBuilder {
         return false;
     }
 
-    public String buildSelectAndArgs(UserQuery query, List<Object> argList) {
+    public String buildSelectAndArgs(PageQuery query, List<Object> argList) {
         String where = StringUtils.join(toWhere(query, argList), " and ");
         if (!where.isEmpty()) {
             where = " where " + where;
@@ -68,7 +75,7 @@ public abstract class QueryBuilder {
         return "select * from " + tableName + where + page;
     }
 
-    public String buildCountAndArgs(UserQuery query, List<Object> argList) {
+    public String buildCountAndArgs(PageQuery query, List<Object> argList) {
         String where = StringUtils.join(toWhere(query, argList), " ");
         if (!where.isEmpty()) {
             where = " where " + where;

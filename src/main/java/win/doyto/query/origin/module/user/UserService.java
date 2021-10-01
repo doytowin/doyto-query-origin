@@ -11,9 +11,12 @@ import javax.annotation.Resource;
  * @author f0rb on 2021-10-01
  */
 @Service
-public class UserService extends QueryService {
+public class UserService extends QueryService<User> {
 
     @Resource
     UserRepository userRepository;
 
+    public UserService() {
+        super(User.class);
+    }
 }

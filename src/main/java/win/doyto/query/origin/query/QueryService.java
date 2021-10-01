@@ -2,9 +2,6 @@ package win.doyto.query.origin.query;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
-import win.doyto.query.origin.module.user.User;
-import win.doyto.query.origin.module.user.UserQuery;
-import win.doyto.query.origin.module.user.UserQueryBuilder;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -18,30 +15,36 @@ import javax.persistence.Query;
  *
  * @author f0rb on 2021-10-01
  */
-public class QueryService {
+public class QueryService<E> {
     @Resource
     EntityManager entityManager;
 
-    UserQueryBuilder userQueryBuilder = new UserQueryBuilder(User.class);
+    QueryBuilder queryBuilder;
+    private Class<E> clazz;
 
-    public List<User> query(UserQuery userQuery) {
+    public QueryService(Class<E> clazz) {
+        this.clazz = clazz;
+        queryBuilder = new QueryBuilder(this.clazz);
+    }
+
+    public List<E> query(PageQuery pageQuery) {
         List<Object> argList = new ArrayList<>();
-        String sql = userQueryBuilder.buildSelectAndArgs(userQuery, argList);
+        String sql = queryBuilder.buildSelectAndArgs(pageQuery, argList);
         return executeQuery(sql, argList);
     }
 
     @SuppressWarnings("unchecked")
-    private List<User> executeQuery(String sql, List<Object> argList) {
-        Query query = entityManager.createNativeQuery(sql, User.class);
+    private List<E> executeQuery(String sql, List<Object> argList) {
+        Query query = entityManager.createNativeQuery(sql, this.clazz);
         for (int i = 0; i < argList.size(); i++) {
             query.setParameter(i + 1, argList.get(i));
         }
         return query.getResultList();
     }
 
-    public Long count(UserQuery userQuery) {
+    public Long count(PageQuery pageQuery) {
         List<Object> argList = new ArrayList<>();
-        String sql = userQueryBuilder.buildCountAndArgs(userQuery, argList);
+        String sql = queryBuilder.buildCountAndArgs(pageQuery, argList);
         return executeCount(sql, argList);
     }
 
@@ -53,9 +56,9 @@ public class QueryService {
         return ((BigInteger) query.getSingleResult()).longValue();
     }
 
-    public Page<User> page(UserQuery userQuery) {
-        List<User> list = query(userQuery);
-        Long count = count(userQuery);
-        return new PageImpl<>(list, userQuery.toPageRequest(), count);
+    public Page<E> page(PageQuery pageQuery) {
+        List<E> list = query(pageQuery);
+        Long count = count(pageQuery);
+        return new PageImpl<>(list, pageQuery.toPageRequest(), count);
     }
 }
