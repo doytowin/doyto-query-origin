@@ -1,6 +1,5 @@
 package win.doyto.query.origin.query;
 
-import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
@@ -9,14 +8,18 @@ import win.doyto.query.origin.module.user.UserQuery;
 import java.lang.reflect.Field;
 import java.util.LinkedList;
 import java.util.List;
+import javax.persistence.Table;
 
 /**
  * QueryBuilder
  *
  * @author f0rb on 2021-10-01
  */
-@AllArgsConstructor
 public abstract class QueryBuilder {
+
+    protected QueryBuilder(Class<?> clazz) {
+        this.tableName = clazz.getDeclaredAnnotation(Table.class).name();
+    }
 
     private String tableName;
 
@@ -54,7 +57,7 @@ public abstract class QueryBuilder {
     }
 
     public String buildSelectAndArgs(UserQuery query, List<Object> argList) {
-        String where = StringUtils.join(toWhere(query, argList), " ");
+        String where = StringUtils.join(toWhere(query, argList), " and ");
         if (!where.isEmpty()) {
             where = "where " + where;
         }

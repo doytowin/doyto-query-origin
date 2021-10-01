@@ -10,8 +10,7 @@ import win.doyto.query.origin.query.QueryBuilder;
  */
 public class UserQueryBuilder extends QueryBuilder {
 
-    public UserQueryBuilder(String tableName) {
-        super("t_user");
+    public UserQueryBuilder(Class<?> clazz) {
+        super(clazz);
     }
-
 }

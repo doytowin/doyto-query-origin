@@ -25,7 +25,7 @@ public class UserService {
     @Resource
     EntityManager entityManager;
 
-    UserQueryBuilder userQueryBuilder = new UserQueryBuilder("t_user");
+    UserQueryBuilder userQueryBuilder = new UserQueryBuilder(User.class);
 
     public List<User> query(UserQuery userQuery) {
         List<Object> argList = new ArrayList<>();
