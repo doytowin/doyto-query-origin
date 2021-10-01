@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 import win.doyto.query.origin.query.PageQuery;
+import win.doyto.query.origin.query.QueryField;
 
 /**
  * UserQuery
@@ -18,7 +19,13 @@ import win.doyto.query.origin.query.PageQuery;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserQuery extends PageQuery {
+
+    @QueryField(and = "account = ?")
     private String account;
+
+    @QueryField(and = "valid = ?")
     private Boolean valid;
+
+    @QueryField(and = "account Like CONCAT('%', ?, '%')")
     private String accountLike;
 }
