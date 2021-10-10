@@ -49,7 +49,11 @@ public class QueryBuilder {
 
     private void appendAnd(List<String> whereList, Field field) {
         QueryField queryField = field.getAnnotation(QueryField.class);
-        whereList.add(queryField.and());
+        if (queryField != null) {
+            whereList.add(queryField.and());
+        } else {
+            whereList.add(field.getName() + " = ?");
+        }
     }
 
     private boolean isValidValue(Object value) {
