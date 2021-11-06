@@ -7,6 +7,7 @@ import win.doyto.query.origin.DemoApplicationTests;
 import java.util.List;
 import javax.annotation.Resource;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
@@ -53,5 +54,17 @@ class UserServiceTest extends DemoApplicationTests {
         Page<User> userPage = userService.page(query);
         assertEquals(3, userPage.getTotalElements());
         assertEquals(1, userPage.getContent().size());
+    }
+
+    @Test
+    void checkField() {
+        UserQuery query = UserQuery.builder().accountLike("adm").build();
+        List<User> users = userService.query(query);
+        assertThat(users).hasSize(1)
+                         .first()
+                         .hasFieldOrPropertyWithValue("account", "admin")
+                         .hasFieldOrPropertyWithValue("email", "admin@email.com")
+                         .hasFieldOrPropertyWithValue("mobile", "9999999")
+                         .hasFieldOrPropertyWithValue("valid", true);
     }
 }

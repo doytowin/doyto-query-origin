@@ -18,6 +18,13 @@ import javax.persistence.Table;
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class User extends AbstractPersistable<Integer> {
+
     private String account;
+
+    private String email;
+
+    private String mobile;
+
     private Boolean valid;
+
 }

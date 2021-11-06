@@ -20,10 +20,24 @@ import win.doyto.query.origin.query.QueryField;
 @NoArgsConstructor
 public class UserQuery extends PageQuery {
 
+    @QueryField(and = "account = ?")
     private String account;
 
-    private Boolean valid;
+    @QueryField(and = "nickname = ?")
+    private String nickname;
+
+    @QueryField(and = "email = ?")
+    private String email;
 
     @QueryField(and = "account Like CONCAT('%', ?, '%')")
     private String accountLike;
+
+    @QueryField(and = "nickname LIKE CONCAT('%', ?, '%')")
+    private String nicknameLike;
+
+    @QueryField(and = "email LIKE CONCAT('%', ?, '%')")
+    private String emailLike;
+
+    @QueryField(and = "valid = ?")
+    private Boolean valid;
 }
