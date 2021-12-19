@@ -23,14 +23,14 @@ public class UserSpecification implements Specification<User> {
     public Predicate toPredicate(Root<User> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
         List<Predicate> list = new ArrayList<>();
 
-        if (StringUtils.isNotBlank(query.getAccount())) {
-            list.add(criteriaBuilder.equal(root.get("account").as(String.class), query.getAccount()));
+        if (StringUtils.isNotBlank(query.getUsername())) {
+            list.add(criteriaBuilder.equal(root.get("username").as(String.class), query.getUsername()));
         }
         if (StringUtils.isNotBlank(query.getUserStatus())) {
             list.add(criteriaBuilder.equal(root.get("status").as(String.class), query.getStatus()));
         }
-        if (StringUtils.isNotBlank(query.getAccountLike())) {
-            list.add(criteriaBuilder.like(root.get("account").as(String.class), "%" + query.getAccountLike() + "%"));
+        if (StringUtils.isNotBlank(query.getUsernameLike())) {
+            list.add(criteriaBuilder.like(root.get("username").as(String.class), "%" + query.getUsernameLike() + "%"));
         }
         return criteriaBuilder.and(list.toArray(new Predicate[0]));
     }
@@ -64,17 +64,17 @@ public class UserQueryBuilder {
     public List<String> toWhere(UserQuery query, List<Object> argList) {
         List<String> whereList = new LinkedList<>();
 
-        if (StringUtils.isNotBlank(query.getAccount())) {
-            whereList.add("account = ?");
-            argList.add(query.getAccount());
+        if (StringUtils.isNotBlank(query.getUsername())) {
+            whereList.add("username = ?");
+            argList.add(query.getUsername());
         }
         if (query.getValid() != null) {
             whereList.add("valid = ?");
             argList.add(query.getValid());
         }
-        if (StringUtils.isNotBlank(query.getAccountLike())) {
-            whereList.add("account like ?");
-            argList.add("%" + query.getAccountLike() + "%");
+        if (StringUtils.isNotBlank(query.getUsernameLike())) {
+            whereList.add("username like ?");
+            argList.add("%" + query.getUsernameLike() + "%");
         }
         return whereList;
     }
@@ -169,14 +169,14 @@ public class UserQueryBuilder {
 ```java
 public class UserQuery extends PageQuery {
 
-    @QueryField(and = "account = ?")
-    private String account;
+    @QueryField(and = "username = ?")
+    private String username;
 
     @QueryField(and = "valid = ?")
     private Boolean valid;
 
-    @QueryField(and = "account Like CONCAT('%', ?, '%')")
-    private String accountLike;
+    @QueryField(and = "username Like CONCAT('%', ?, '%')")
+    private String usernameLike;
 
 }
 ```
